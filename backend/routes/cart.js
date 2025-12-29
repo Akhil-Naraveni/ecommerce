@@ -4,7 +4,7 @@ const Cart = require('../models/cart');
 const Product = require('../models/products');
 
 // Get cart by ID
-router.get('/', async (req, res) =>{
+router.get('/cartitems', async (req, res) =>{
     try{
         const cart =await Cart.findOne().populate('items.productId');
         if(!cart){
