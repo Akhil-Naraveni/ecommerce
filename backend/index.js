@@ -1,9 +1,14 @@
 const express = require('express');
 const connectDB = require('./connection/connection');
+const cors = require('cors');
+require('dotenv').config();
 require('./database/database'); // Seed database on startup
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim()) : '*',
+};
+app.use(cors(corsOptions));
 // Connect to MongoDB
 connectDB();
 app.use(express.json());

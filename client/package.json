@@ -1,0 +1,28 @@
+{
+    "name": "ecommerce-mfe",
+    "version": "1.0.0",
+    "description": "Micro-frontend e-commerce application",
+    "private": true,
+    "scripts": {
+        "install-all": "npm install && cd host && npm install && cd ../cart_app && npm install && cd ../products_app && npm install",
+        "start": "concurrently \"cd host && npm start\" \"cd cart_app && npm start\" \"cd products_app && npm start\"",
+        "build": "npm run build:host && npm run build:cart && npm run build:products",
+        "build:host": "cd host && npm run build",
+        "build:cart": "cd cart_app && npm run build",
+        "build:products": "cd products_app && npm run build"
+    },
+    "keywords": [
+        "ecommerce",
+        "micro-frontend",
+        "module-federation"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.0"
+    }
+}

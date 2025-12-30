@@ -1,0 +1,58 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { ModuleFederationPlugin } = require("webpack").container;
+const path = require("path");
+const deps = require("./package.json").dependencies;
+
+module.exports = {
+  mode: "development",
+  entry: "./src/index",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].[contenthash].js",
+    clean: true,
+  },
+  devServer: {
+    port: 3002,
+    historyApiFallback: true,
+  },
+  resolve: {
+    extensions: [".jsx", ".js", ".json"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        loader: "babel-loader",
+        exclude: /node_modules/,
+        options: {
+          presets: ["@babel/preset-react", "@babel/preset-env"],
+        },
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.svg$/,
+        type: "asset",
+      },
+    ],
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: "products_app",
+      filename: "remoteEntry.js",
+      exposes: {
+        "./Products": "./src/components/Products",
+      },
+      remotes: {},
+      shared: {
+        react: { singleton: true, requiredVersion: deps.react },
+        "react-dom": { singleton: true, requiredVersion: deps["react-dom"] },
+      },
+    }),
+    new HtmlWebpackPlugin({
+      template: "./src/index.html",
+    }),
+  ],
+};
