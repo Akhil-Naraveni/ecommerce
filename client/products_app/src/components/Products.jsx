@@ -3,6 +3,7 @@ import "./Products.css";
 import productIcon from "../../icons/product.svg"
 import wishlistSelectedIcon from "../../icons/wishlist_selected.svg"
 import wishlistUnselectedIcon from "../../icons/wishlist_not_selected.svg"
+import starIcon from "../../icons/star.svg"
 const Products = () =>{
     const [productsList, setProductsList] = useState([]);
     const [wishlist, setWishlist] = useState([]);
@@ -44,6 +45,7 @@ const Products = () =>{
             <div className="productscontainer">
             {productsList.map((product) => (
                 <div className="productcard" key={product._id}>
+                    <span className="rating"><img src={starIcon} alt="Star Rating" width="14" height="20"/>{product.rating.rate} ({product.rating.count})</span>
                     <img src={product.image} alt={product.name} width="200" height="200"/>
                     <h4>{product.name}</h4>
                     <p>{product.description}</p>

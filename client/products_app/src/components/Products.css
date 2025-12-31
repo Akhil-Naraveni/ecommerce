@@ -59,7 +59,7 @@
 .productcard > img{
     width: 200px;
     height: 200px;
-    object-fit: contain;
+    object-fit: cover;
 }
 .productcard > .price{
     font-weight: bold;
@@ -74,4 +74,12 @@ hr{
     height: 1px;
     background: black;
     box-shadow: 2px 0px 2px 0px;
+}
+.rating{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin: 6px 0;
+    font-size: small;
 }
