@@ -13,13 +13,21 @@ router.get('/cartitems', async (req, res) =>{
         // Filter out items where product doesn't exist
         cart.items = cart.items.filter(item => item.productId !== null);
         
-        const totalPrice = cart.items.reduce((total, item) => {
-            return total + (item.productId.price * item.quantity);
+        // Transform productId to product for frontend consistency
+        const transformedItems = cart.items.map(item => ({
+            _id: item._id,
+            quantity: item.quantity,
+            product: item.productId
+        }));
+        
+        const totalPrice = transformedItems.reduce((total, item) => {
+            return total + (item.product.price * item.quantity);
         }, 0);
-        const totalNoOfItems = cart.items.reduce((total, item) => {
+        const totalNoOfItems = transformedItems.reduce((total, item) => {
             return total + item.quantity;
         }, 0);
-        res.json({ cart, totalPrice, totalNoOfItems });
+        
+        res.json({ cart: { ...cart.toObject(), items: transformedItems }, totalPrice, totalNoOfItems });
     } catch (error){
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
