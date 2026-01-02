@@ -17,7 +17,6 @@ const Products = () =>{
     }, []);
 
     const handleAddToCart = (product) => {
-        //alert(product.name);
         fetch("http://localhost:5000/api/v1/cart/cartitems", {
             method: "POST",
             headers: {
@@ -25,7 +24,8 @@ const Products = () =>{
             },
             body: JSON.stringify({ productId: product._id, quantity: 1 }),
         })
-
+        .then((response) => response.json())
+        .catch((error) => console.error("Error adding to cart:", error));
     };
     const handleWishlist = (product) => {
         if (wishlist.includes(product._id)) {
