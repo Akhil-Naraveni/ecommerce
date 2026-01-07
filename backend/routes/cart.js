@@ -100,9 +100,11 @@ router.delete('/cartitems/:itemId', async (req, res) =>{
         if(!item){
             return res.status(404).json({ message: 'Item not found in cart' });
         }
-        cart.items = cart.items.filter(item => item.id !== itemId);
+        cart.items.pull({ _id: itemId });
         await cart.save();
         await cart.populate('items.productId');
+        // Filter out items where product doesn't exist
+        cart.items = cart.items.filter(item => item.productId !== null);
         const totalPrice = cart.items.reduce((total, item) => {
             return total + (item.productId.price * item.quantity);
         }, 0);
