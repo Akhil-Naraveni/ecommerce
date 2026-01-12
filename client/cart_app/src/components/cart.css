@@ -170,19 +170,30 @@ hr{
     width: 90%;
     max-width: 480px;
     text-align: center;
+    /* background: repeating-linear-gradient(45deg, #f8e3bc, #edb9b9 50%); */
 }   
 .modal-header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 20px;
+    font-size: 24px;
     margin-bottom: 12px;
     font-weight: 700;
     color: #2c3e50;
+        border-left-style: solid;
+    border-left-width: 12px;
+    border-left-color: orangered;
+    padding-left: 6px;
+    height: 60px;
 }
 .modal-body{
     margin-bottom: 20px;
     text-align: left;
+    margin-bottom: 20px;
+    text-align: left;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0px 0px 4px lightgrey;
 }
 .modal-body label{
     display: flex;
@@ -195,13 +206,14 @@ hr{
     border: 1px solid lightblue;
     border-radius: 10px;
     cursor: pointer;
+    height: 54px;
 }
 .modal-body label:hover{
    scale: 1.02;
    transition: all 0.3s ease;
 }
 .modal-body label.selected{
-    border: 2px solid green;
+    border: 2px solid orange;
     box-shadow: 0px 4px 12px lightgrey;
 }
 .modal-body .paymentInfo{
@@ -213,6 +225,7 @@ hr{
 }
 .modal-body .paymentInfo h4{
     margin: 0px;
+    font-family: sans-serif;
 }
 .modal-body .paymentInfo p{
    margin: 0px;
@@ -223,16 +236,58 @@ hr{
 .radioIndicator{
     height: 30px;
     width: 30px;
-    border: 1px solid green;
+    border: 1px solid orange;
     border-radius: 20px;
 }
 .radioIndicator.selected{
-    background-color: green;
+    background-color: white;
 }
 .modal-footer{
     display: flex;
     justify-content: flex-end;
     gap: 12px;
+}
+.confirmPaymentBtn{
+    height: 40px;
+    background-color: darkorange;
+    border: none;
+    color: white;
+    font-weight: 700;
+    width: 36%;
+    border-radius: 6px;
+    font-size: 16px;
+
+}
+.confirmPaymentBtn:hover{
+    background-color: orange;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.cancelPaymentBtn{
+    height: 40px;
+    background-color: #e94343;
+    border: none;
+    color: white;
+    font-weight: 700;
+    border-radius: 6px;
+}
+.cancelPaymentBtn:hover{
+    background-color: #ff4c4c;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.totalPrice{
+    font-weight: 600;
+    color: orange;
+}
+.summaryDivider hr{
+    border: none;
+    height: 1px;
+    background-color: lightgray;
+    margin: 8px 0;
+}
+.summaryDivider p{
+    width: 160px;
 }
 .sr-only{
     position: absolute;
@@ -246,11 +301,32 @@ hr{
 }
 .paymentmethodOptions{
     border: none;
+    padding: 4px 10px;
 }
 .paymentmethodsctnr{
     border: none;
-    box-shadow: 0px 4px 12px lightgrey;
+    /* box-shadow: 0px 4px 12px lightgrey; */
     border-radius: 6px;
+}
+.ordersummary{
+    border: none;
+    /* box-shadow: 0px 0px 4px lightgrey; */
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: #7b7777;
+    /* background-color: #eeebeb; */
+}
+.ordersummary h3 p{
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.summaryCtnr{
+    display: flex;
+    justify-content: space-between;
+}
+.paymentOptionLabel  .google-pay img{
+    height: 30px !important;
 }
 @media screen and (max-width:767px) {
     .cartSectionCtnr{

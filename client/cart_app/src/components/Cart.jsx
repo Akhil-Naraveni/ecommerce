@@ -1,6 +1,12 @@
 import React, {useState, useEffect} from "react";
 import cartIcon from "../../icons/cart.svg";
 import removeIcon from "../../icons/remove.svg";
+import creditCardIcon from "../../icons/creditcard.svg";
+import paypalIcon from "../../icons/paypal.svg";
+import googlePayIcon from "../../icons/googlepay.svg";
+import applePayIcon from "../../icons/applepay.svg";
+import tickIcon from "../../icons/tick.svg";
+
 import "./Cart.css"
 
 const Cart = () =>{
@@ -117,10 +123,10 @@ const Cart = () =>{
     }
 
     const paymentoptions = [
-        {id : "credit-card ", name: "Credit Card", icon : {cartIcon}, description: "Visa, MasterCard, American Express"},
-        {id : "paypal", name: "PayPal", icon : {cartIcon}, description: "Pay easily using your PayPal account"},
-        {id : "google-pay", name: "Google Pay", icon : {cartIcon}, description: "Fast checkout with Google Pay"},
-        {id : "apple-pay", name: "Apple Pay", icon : {cartIcon}, description: "Secure payment via Apple Pay"},
+        {id : "credit-card", name: "Credit Card", icon : creditCardIcon, description: "Visa, MasterCard, American Express"},
+        {id : "paypal", name: "PayPal", icon : paypalIcon, description: "Pay easily using your PayPal account"},
+        {id : "google-pay", name: "Google Pay", icon : googlePayIcon, description: "Fast checkout with Google Pay"},
+        {id : "apple-pay", name: "Apple Pay", icon : applePayIcon, description: "Secure payment via Apple Pay"},
     ];
     return(
         <div className="cartMain">
@@ -170,19 +176,29 @@ const Cart = () =>{
                     <div className="modal-content">
                         <div className="modal-header">
                             <h3>Select payment method</h3>
-                            <span className="close-button">&times;</span>
                         </div>
                         <div className="modal-body">
                             <div className="ordersummary">
                                 <h3>Order Summary</h3>
-                                <p>Total Items: {cartItems.length}</p>
-                                <p>Total Price: ${summaryDetails.totalPrice}</p>
-                                <p>Items in total: {summaryDetails.totalItems}</p>
+                                <div className="summaryCtnr">
+                                <div className="summaryDivider">
+                                    <p>Total Items: {cartItems.length}</p>
+                                    <p>Items in total: {summaryDetails.totalItems}</p>
+                                     <p>Total Price: <span className="totalPrice">${summaryDetails.totalPrice}</span></p>
+                                </div>
+                                <div className="summaryDivider">
+                                    <p>Shipping charges : $0</p>
+                                    <p>Enjoy free shipping on orders over $499</p>
+                                    {/* <p>GSTIN : TSHJ1452777NC15</p>
+                                    <p>OrderId : {new Date().toISOString().replace(/[^0-9]/g, '')}</p> */}
+                                </div>
+                                </div>
+                                
                             </div>
                             <div className="paymentmethodsctnr">
                             <fieldset className="paymentmethodOptions">
                                     {paymentoptions.map((option) => (
-                                        <label key={option.id} className={`paymentOptionLabel ${selectedPayementMethod === option.id ? 'selected' : ''}`} htmlFor={`payment-${option.id}`}>
+                                        <label key={option.id} className={`paymentOptionLabel ${selectedPayementMethod === option.id ? 'selected' : ''} ${option.id}`} htmlFor={`payment-${option.id}`}>
                                             <input
                                             onChange={()=>setSelectedPaymentMethod(option.id)}
                                             checked={selectedPayementMethod === option.id}
@@ -191,13 +207,13 @@ const Cart = () =>{
                                              name="paymentMethod" 
                                              value={option.id} 
                                              className="sr-only"/>
-                                            <img src={option.icon.cartIcon} alt={`${option.name} Icon`} width="30" height="30"/>
+                                            <img src={option.icon} alt={`${option.name} Icon`} width="40" height="40"/>
                                             <div className="paymentInfo">
                                                 <h4>{option.name}</h4>
                                                 <p>{option.description}</p>
                                             </div>
                                             <div className={`radioIndicator ${selectedPayementMethod === option.id ? 'selected' : ''}`}>
-                                                
+                                                {selectedPayementMethod === option.id && <img src={tickIcon} alt="Selected" width="30" height="30"/>}
                                             </div>
                                         </label>
                                     ))}
