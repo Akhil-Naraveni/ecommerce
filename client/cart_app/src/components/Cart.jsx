@@ -1,19 +1,55 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback, useMemo, useRef} from "react";
 import cartIcon from "../../icons/cart.svg";
 import removeIcon from "../../icons/remove.svg";
 import creditCardIcon from "../../icons/creditcard.svg";
 import paypalIcon from "../../icons/paypal.svg";
 import googlePayIcon from "../../icons/googlepay.svg";
 import applePayIcon from "../../icons/applepay.svg";
-import tickIcon from "../../icons/tick.svg";
 
+import PaymentModal from "./PaymentModal";
+import PaymentConfirmModal from "./PaymentConfirmModal";
 import "./Cart.css"
+
+// Memoized Cart Item Component
+// CartItem component with proper display name
+function CartItem({ item, onUpdateQuantity, onRemove }) {
+    const handleDecrement = useCallback(() => onUpdateQuantity(item._id, -1), [item._id, onUpdateQuantity]);
+    const handleIncrement = useCallback(() => onUpdateQuantity(item._id, 1), [item._id, onUpdateQuantity]);
+    const handleRemoveClick = useCallback(() => onRemove(item._id), [item._id, onRemove]);
+    
+    return (
+        <li className="productListItem" key={item._id}>
+            <div className="cartProductCtnr">
+                <img src={item.product.image} alt={item.product.name} width="50" height="50"/>
+                <div className="cartProductName">
+                    <h4>{item.product.name}</h4>
+                    <p>{item.product.category}</p>
+                </div>
+            </div>
+            <div className="buttonCtnr">
+                <button onClick={handleDecrement} className="quantityBtn">-</button>
+                <span className="quantityDisplay">{item.quantity}</span>
+                <button onClick={handleIncrement} className="quantityBtn">+</button>
+            </div>
+            <div className="priceDisplay">
+                <p>Price: ${item.product.price * item.quantity}</p>
+            </div>
+            <button onClick={handleRemoveClick} className="removeBtn">
+                <img src={removeIcon} alt="Remove Item" width="30" height="30"/>
+            </button>
+        </li>
+    );
+}
+
+const MemoizedCartItem = React.memo(CartItem);
 
 const Cart = () =>{
     const [cartItems, setCartItems] = useState([]);
     const [summaryDetails, setSummaryDetails] = useState({totalItems: 0, totalPrice: 0});
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [selectedPayementMethod, setSelectedPaymentMethod] = useState(null);
+    const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+    const cartItemsRef = useRef(cartItems);
 
     const fetchCartItems = async () => {
         console.log("Fetching cart items...");
@@ -68,8 +104,13 @@ const Cart = () =>{
         };
     }, []);
 
-    const handleUpdateQuantity = async(itemId, delta) => {
-        const item = cartItems.find((item) => item._id === itemId);
+    // Keep ref in sync with cartItems
+    useEffect(() => {
+        cartItemsRef.current = cartItems;
+    }, [cartItems]);
+
+    const handleUpdateQuantity = useCallback(async(itemId, delta) => {
+        const item = cartItemsRef.current.find((item) => item._id === itemId);
         if (!item) return;
         const newQuantity = item.quantity + delta;
         if (newQuantity < 1){
@@ -97,8 +138,8 @@ const Cart = () =>{
             localStorage.setItem("cartUpdated", Date.now().toString());
         })
         .catch((error) => console.error("Error updating item quantity:", error));
-    };
-    const handleRemove = (itemId) => {
+    }, []);
+    const handleRemove = useCallback((itemId) => {
         fetch(`http://localhost:5000/api/v1/cart/cartitems/${itemId}`, {
             method: "DELETE",
         })
@@ -116,18 +157,51 @@ const Cart = () =>{
             localStorage.setItem("cartUpdated", Date.now().toString());
         })
         .catch((error) => console.error("Error removing item from cart:", error));
-    };
+    }, []);
 
-    const handleCheckout = () => {
+    const handleCheckout = useCallback(() => {
         setShowPaymentModal(true);
-    }
+    }, []);
 
-    const paymentoptions = [
+    const handlePayment = useCallback(() => {
+        if (!selectedPayementMethod) {
+            alert("Please select a payment method.");
+            return;
+        }
+        setPaymentConfirmed(true);
+        setShowPaymentModal(false);
+        // Here you can also clear the cart or perform other actions post-payment
+    }, [selectedPayementMethod]);
+
+    // Memoize summaryDetails to prevent PaymentConfirmModal re-renders
+    const memoizedSummaryDetails = useMemo(() => summaryDetails, [summaryDetails.totalItems, summaryDetails.totalPrice]);
+
+    const handlePaymentDone = useCallback(() => {
+        setPaymentConfirmed(false);
+         fetch(`http://localhost:5000/api/v1/cart/cartitems`, {
+            method: "DELETE",
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(() => {
+            fetchCartItems();
+            // Dispatch custom event
+            window.dispatchEvent(new CustomEvent("cartUpdated"));
+            // Set localStorage for cross-tab communication
+            localStorage.setItem("cartUpdated", Date.now().toString());
+        })
+        .catch((error) => console.error("Error clearing cart after payment:", error)); 
+    }, []);
+    const paymentoptions = useMemo(() => [
         {id : "credit-card", name: "Credit Card", icon : creditCardIcon, description: "Visa, MasterCard, American Express"},
         {id : "paypal", name: "PayPal", icon : paypalIcon, description: "Pay easily using your PayPal account"},
         {id : "google-pay", name: "Google Pay", icon : googlePayIcon, description: "Fast checkout with Google Pay"},
         {id : "apple-pay", name: "Apple Pay", icon : applePayIcon, description: "Secure payment via Apple Pay"},
-    ];
+    ], []);
     return(
         <div className="cartMain">
             <div className="cartHeader">
@@ -138,27 +212,12 @@ const Cart = () =>{
             <div className="cartSectionCtnr">
                 <ul className="productListItemCtnr">
                     {cartItems.map((item) => (
-                        <li className="productListItem" key={item._id}>
-                            <div className="cartProductCtnr">
-                                <img src={item.product.image} alt={item.product.name} width="50" height="50"/>
-                                <div className="cartProductName">
-                                    <h4>{item.product.name}</h4>
-                                    <p>{item.product.category}</p>
-                                </div>
-                            </div>
-                            <div className="buttonCtnr">
-                                <button onClick={() => handleUpdateQuantity(item._id, -1)} className="quantityBtn">-</button>
-                                <span className="quantityDisplay">{item.quantity}</span>
-                                <button onClick={() => handleUpdateQuantity(item._id, 1)} className="quantityBtn">+</button>
-                            </div>
-                            <div className="priceDisplay">
-                                <p>Price: ${item.product.price * item.quantity}</p>
-                            </div>
-                            <button onClick={() => handleRemove(item._id)} className="removeBtn">
-                                <img src={removeIcon} alt="Remove Item" width="30" height="30"/>
-                            </button>
-                            
-                        </li>
+                        <MemoizedCartItem 
+                            key={item._id} 
+                            item={item}
+                            onUpdateQuantity={handleUpdateQuantity}
+                            onRemove={handleRemove}
+                        />
                     ))}
                 </ul>
 
@@ -171,62 +230,23 @@ const Cart = () =>{
                 </div>) : (<h1 className="emptyCartMsg">Your cart is empty.</h1>)}
             </div>
 
-            {showPaymentModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h3>Select payment method</h3>
-                        </div>
-                        <div className="modal-body">
-                            <div className="ordersummary">
-                                <h3>Order Summary</h3>
-                                <div className="summaryCtnr">
-                                <div className="summaryDivider">
-                                    <p>Total Items: {cartItems.length}</p>
-                                    <p>Items in total: {summaryDetails.totalItems}</p>
-                                     <p>Total Price: <span className="totalPrice">${summaryDetails.totalPrice}</span></p>
-                                </div>
-                                <div className="summaryDivider">
-                                    <p>Shipping charges : $0</p>
-                                    <p>Enjoy free shipping on orders over $499</p>
-                                    {/* <p>GSTIN : TSHJ1452777NC15</p>
-                                    <p>OrderId : {new Date().toISOString().replace(/[^0-9]/g, '')}</p> */}
-                                </div>
-                                </div>
-                                
-                            </div>
-                            <div className="paymentmethodsctnr">
-                            <fieldset className="paymentmethodOptions">
-                                    {paymentoptions.map((option) => (
-                                        <label key={option.id} className={`paymentOptionLabel ${selectedPayementMethod === option.id ? 'selected' : ''} ${option.id}`} htmlFor={`payment-${option.id}`}>
-                                            <input
-                                            onChange={()=>setSelectedPaymentMethod(option.id)}
-                                            checked={selectedPayementMethod === option.id}
-                                             type="radio" 
-                                             id={`payment-${option.id}`} 
-                                             name="paymentMethod" 
-                                             value={option.id} 
-                                             className="sr-only"/>
-                                            <img src={option.icon} alt={`${option.name} Icon`} width="40" height="40"/>
-                                            <div className="paymentInfo">
-                                                <h4>{option.name}</h4>
-                                                <p>{option.description}</p>
-                                            </div>
-                                            <div className={`radioIndicator ${selectedPayementMethod === option.id ? 'selected' : ''}`}>
-                                                {selectedPayementMethod === option.id && <img src={tickIcon} alt="Selected" width="30" height="30"/>}
-                                            </div>
-                                        </label>
-                                    ))}
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="confirmPaymentBtn">Confirm Payment</button>
-                            <button className="cancelPaymentBtn" onClick={() => setShowPaymentModal(false)}>Cancel</button>
-                        </div>    
-                    </div>
-                </div>
-            )}
+            <PaymentModal
+                showPaymentModal={showPaymentModal}
+                setShowPaymentModal={setShowPaymentModal}
+                summaryDetails={memoizedSummaryDetails}
+                selectedPayementMethod={selectedPayementMethod}
+                setSelectedPaymentMethod={setSelectedPaymentMethod}
+                handlePayment={handlePayment}
+                paymentoptions={paymentoptions}
+            />
+            <PaymentConfirmModal
+                showPaymentConfirmModal={paymentConfirmed}
+                setShowPaymentConfirmModal={setPaymentConfirmed}
+                handlePaymentConfirmation={handlePaymentDone}
+                summaryDetails={memoizedSummaryDetails}
+                paymentMethod={selectedPayementMethod}
+            />
+
         </div>
         );
 };
