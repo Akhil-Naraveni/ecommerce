@@ -9,6 +9,8 @@
     gap: 10px;
     margin-bottom: 14px;
     background-color: antiquewhite;
+    position: sticky;
+    top: 0;
 }
 .productscontainer{
     display: grid;
