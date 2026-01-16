@@ -9,6 +9,8 @@
     gap: 10px;
     margin-bottom: 14px;
     background-color: antiquewhite;
+    position: sticky;
+    top: 0;
 }
 
 hr{
@@ -27,6 +29,7 @@ hr{
     width: 62%;
     border-radius: 6px;
     margin: 0px;
+    padding-left: 10px;
 }
 
 .productListItem{
@@ -71,6 +74,7 @@ hr{
 .priceDisplay{
     font-weight: bold;
     font-size: 18px;
+    width: 62px;
 }
 .cartProductName{
     text-align: start;
@@ -86,7 +90,7 @@ hr{
     /* background: linear-gradient(135deg, #eef0f4 0%, #d3d4d5 100%); */
     border: 1px solid #e0e6ed;
     position: sticky;
-    top: 20px;
+    top: 90px;
 }
 
 .cartSummaryCtnr h3{
@@ -170,8 +174,8 @@ hr{
     width: 90%;
     max-width: 480px;
     text-align: center;
-    animation: slideUp 0.3s;
-    height: 90vh;
+    animation: slideUp 0.3s ease-out;
+    height: 88vh;
     overflow: auto;
     /* background: repeating-linear-gradient(45deg, #f8e3bc, #edb9b9 50%); */
     display: flex;
@@ -252,6 +256,13 @@ hr{
     font-weight: 200;
     font-size: 14px;
     color: grey;
+}
+.modal-body.paymentConfirmBody{
+    box-shadow: none;
+}
+.modal-body.paymentConfirmBody .ordersummary{
+    font-family: monospace;
+    font-size: 16px;
 }
 .radioIndicator{
     height: 30px;
@@ -338,7 +349,7 @@ hr{
 .summaryCtnr{
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 .summaryCtnr p{
     margin: 0px;
@@ -361,9 +372,11 @@ hr{
 
 }
 .summaryItem.lastItem{
-    border-top: 1px solid #ec9e42;
+    border-top: 1px solid lightgrey;
     margin-top: 4px;
     font-size: 18px;
+    color: #0ab60a;
+    font-size: 22px;
 }
 .paymentOptionLabel.google-pay img{
     height: 30px !important;
@@ -378,6 +391,7 @@ hr{
     padding: 4px;
     margin-bottom: 4px;
     border-radius: 8px;
+    color: #0056b3;
 }
 .doneBtn{
     height: 48px;
@@ -397,18 +411,28 @@ hr{
     box-shadow: 0 6px 12px rgba(236, 158, 66, 0.4);
 }
 .orderId{
-    background-color: #f7f588;
-    padding: 2px;
+    color: #007bff;
 }
 .trackingHeader{
     display: flex;
     gap: 10px;
     font-size: 16px;
     font-family: math;
+    margin-bottom: 6px;
 }
-.trackingHeader h4{
-    margin: 12px 4px;
+.trackingHeader p{
+    margin: 4px 4px;
 }
+.trackingHeader .orderId{
+    background-color: #f7f588;
+    padding: 2px 4px;
+    font-weight: 600;
+}
+.emptyCartMessage{
+    width: 100%;
+}
+
+
 @media screen and (max-width:767px) {
     .cartSectionCtnr{
         flex-direction: column;
@@ -416,4 +440,14 @@ hr{
     .productListItemCtnr, .cartSummaryCtnr{
         width: auto;
     }
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

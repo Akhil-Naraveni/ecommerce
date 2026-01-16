@@ -51,8 +51,8 @@ const PaymentConfirmModal = ({
                         <h3>Payment Details</h3>
                         <div className="summaryCtnr">
                             <div className="summaryItem">
-                                <p>Amount</p>
-                                <span>$ {summaryDetails.totalPrice}</span>
+                                <p>Order number</p>
+                                <span className="orderId">ORD-12767167</span>
                             </div>
                             <div className="summaryItem">
                                 <p>Transaction Id</p>
@@ -60,11 +60,15 @@ const PaymentConfirmModal = ({
                             </div>
                             <div className="summaryItem">
                                 <p>Payment Method</p>
-                                <span>{paymentMethod}</span>
+                                <span>{paymentMethod.toUpperCase()}</span>
                             </div>
                             <div className="summaryItem">
-                                <p>Date</p>
+                                <p>Order Date</p>
                                 <span>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase()}</span>
+                            </div>
+                            <div className="summaryItem lastItem">
+                                <p>Total Paid</p>
+                                <span>$ {summaryDetails.totalPrice}</span>
                             </div>
                         </div>
                     </div>
@@ -74,8 +78,8 @@ const PaymentConfirmModal = ({
                 <div className="modal-footer">
                     <div className="footerdiv trackinginfo">
                         <div className="trackingHeader">
-                        <img src={trackIcon} alt="Track Order" width="40" height="40"/>
-                        <h4>Track Your Order - <span className="orderId">OrderId : 12767167</span></h4>
+                        <img src={trackIcon} alt="Track Order" width="30" height="30"/>
+                        <p>Track your order in the Orders section - <span className="orderId">OrderId : ORD-12767167</span></p>
                         </div>
                         <p>You will receive an email with tracking details once your order is shipped.</p>
                     </div>
