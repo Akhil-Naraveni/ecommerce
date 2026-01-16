@@ -24,7 +24,11 @@ const Products = () =>{
             },
             body: JSON.stringify({ productId: product._id, quantity: 1 }),
         })
-        .then((response) => response.json())
+        .then((response) => {
+            let addProductEvt = new CustomEvent("productAddedToCart", { detail: product });
+            window.dispatchEvent(addProductEvt);
+            return response.json()
+        })
         .catch((error) => console.error("Error adding to cart:", error));
     };
     const handleWishlist = (product) => {
