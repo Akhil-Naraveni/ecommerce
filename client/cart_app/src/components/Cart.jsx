@@ -32,7 +32,7 @@ function CartItem({ item, onUpdateQuantity, onRemove }) {
                 <button onClick={handleIncrement} className="quantityBtn">+</button>
             </div>
             <div className="priceDisplay">
-                <p>Price: ${item.product.price * item.quantity}</p>
+                <p>${item.product.price * item.quantity}</p>
             </div>
             <button onClick={handleRemoveClick} className="removeBtn">
                 <img src={removeIcon} alt="Remove Item" width="30" height="30"/>
@@ -52,7 +52,6 @@ const Cart = () =>{
     const cartItemsRef = useRef(cartItems);
 
     const fetchCartItems = async () => {
-        console.log("Fetching cart items...");
         fetch("http://localhost:5000/api/v1/cart/cartitems")
             .then(async (response) => {
                 if (!response.ok) {
@@ -62,14 +61,14 @@ const Cart = () =>{
                 return resData
             })
             .then((data) => {
-                console.log("Raw API response:", data);
                 const items = data.cart.items
                 setSummaryDetails({
                     totalItems: data.totalNoOfItems,
                     totalPrice: data.totalPrice
                 });
-                console.log("Processed items:", items);
                 setCartItems(items);
+                const cartUpdatedEvent = new CustomEvent("cartUpdated", { detail: { cartItems: items } });
+                window.dispatchEvent(cartUpdatedEvent);
             })
             .catch((error) => {
                 console.error("Error fetching cart items:", error);
@@ -81,26 +80,8 @@ const Cart = () =>{
         // Fetch cart items on component mount
         fetchCartItems();
 
-        // Listen for storage changes
-        const handleStorageChange = (event) => {
-            if (event.key === "cartUpdated") {
-                console.log("Storage event detected, fetching updated cart");
-                fetchCartItems();
-            }
-        };
-
-        // Listen for custom events
-        const handleCustomEvent = () => {
-            console.log("Custom event detected, fetching updated cart");
-            fetchCartItems();
-        };
-
-        window.addEventListener("storage", handleStorageChange);
-        window.addEventListener("cartUpdated", handleCustomEvent);
-
         return () => {
-            window.removeEventListener("storage", handleStorageChange);
-            window.removeEventListener("cartUpdated", handleCustomEvent);
+            window.removeEventListener("productAddedToCart", fetchCartItems);
         };
     }, []);
 
@@ -109,6 +90,10 @@ const Cart = () =>{
         cartItemsRef.current = cartItems;
     }, [cartItems]);
 
+    window.addEventListener("productAddedToCart", (e) => {
+        console.log("Product added to cart event received:", e.detail);
+        fetchCartItems();
+    });
     const handleUpdateQuantity = useCallback(async(itemId, delta) => {
         const item = cartItemsRef.current.find((item) => item._id === itemId);
         if (!item) return;
@@ -132,10 +117,7 @@ const Cart = () =>{
         })
         .then(() => {
             fetchCartItems();
-            // Dispatch custom event
-            window.dispatchEvent(new CustomEvent("cartUpdated", { detail: { itemId, quantity: newQuantity } }));
-            // Set localStorage for cross-tab communication
-            localStorage.setItem("cartUpdated", Date.now().toString());
+        
         })
         .catch((error) => console.error("Error updating item quantity:", error));
     }, []);
@@ -151,10 +133,6 @@ const Cart = () =>{
         })
         .then(() => {
             fetchCartItems();
-            // Dispatch custom event
-            window.dispatchEvent(new CustomEvent("cartUpdated", { detail: { itemId, quantity: 0 } }));
-            // Set localStorage for cross-tab communication
-            localStorage.setItem("cartUpdated", Date.now().toString());
         })
         .catch((error) => console.error("Error removing item from cart:", error));
     }, []);
@@ -189,10 +167,6 @@ const Cart = () =>{
         })
         .then(() => {
             fetchCartItems();
-            // Dispatch custom event
-            window.dispatchEvent(new CustomEvent("cartUpdated"));
-            // Set localStorage for cross-tab communication
-            localStorage.setItem("cartUpdated", Date.now().toString());
         })
         .catch((error) => console.error("Error clearing cart after payment:", error)); 
     }, []);
@@ -205,12 +179,12 @@ const Cart = () =>{
     return(
         <div className="cartMain">
             <div className="cartHeader">
-                <h1>Shopping Cart</h1>
+                <h1>Cart</h1>
                 <img src={cartIcon} alt="Cart Icon" width="40" height="40"/>
             </div>
             <hr/>
             <div className="cartSectionCtnr">
-                <ul className="productListItemCtnr">
+                {cartItems.length > 0 && (<ul className="productListItemCtnr">
                     {cartItems.map((item) => (
                         <MemoizedCartItem 
                             key={item._id} 
@@ -219,15 +193,19 @@ const Cart = () =>{
                             onRemove={handleRemove}
                         />
                     ))}
-                </ul>
+                </ul>)}
 
-                {cartItems.length > 0 ? (<div className="cartSummaryCtnr">
+                {cartItems.length > 0 && (<div className="cartSummaryCtnr">
                     <h3>Order Summary</h3>
                     <p>Total Items: {cartItems.length}</p>
                     <p>Total Price: ${summaryDetails.totalPrice}</p>
                     <p>Items in total: {summaryDetails.totalItems}</p>
                     <button onClick={handleCheckout} className="checkoutBtn">Proceed to Checkout</button>
-                </div>) : (<h1 className="emptyCartMsg">Your cart is empty.</h1>)}
+                </div>)}
+            {cartItems.length === 0 && (<div className="emptyCartMessage">
+                <h2>Your cart is empty.</h2>
+                <p>Add some products to your cart to see them here.</p>
+            </div>)}
             </div>
 
             <PaymentModal
