@@ -10,7 +10,8 @@
     margin-bottom: 14px;
     background-color: antiquewhite;
     position: sticky;
-    top: 0;
+    top: 0px;
+    z-index: 100;
 }
 .productscontainer{
     display: grid;
@@ -84,4 +85,10 @@ hr{
     gap: 4px;
     margin: 6px 0;
     font-size: small;
+}
+.loading{
+    text-align: center;
+    font-size: 24px;
+    margin-top: 10%;
+
 }

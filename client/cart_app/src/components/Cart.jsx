@@ -50,6 +50,7 @@ const Cart = () =>{
     const [selectedPayementMethod, setSelectedPaymentMethod] = useState(null);
     const [paymentConfirmed, setPaymentConfirmed] = useState(false);
     const cartItemsRef = useRef(cartItems);
+    const [loading, setLoading] = useState(true);
 
     const fetchCartItems = async () => {
         fetch("http://localhost:5000/api/v1/cart/cartitems")
@@ -57,6 +58,7 @@ const Cart = () =>{
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                setLoading(false);
                 const resData = await response.json();
                 return resData
             })
@@ -177,7 +179,8 @@ const Cart = () =>{
         {id : "apple-pay", name: "Apple Pay", icon : applePayIcon, description: "Secure payment via Apple Pay"},
     ], []);
     return(
-        <div className="cartMain">
+        <>
+        {loading? (<p className="loading">Loading.....</p>):(<div className="cartMain">
             <div className="cartHeader">
                 <h1>Cart</h1>
                 <img src={cartIcon} alt="Cart Icon" width="40" height="40"/>
@@ -202,7 +205,7 @@ const Cart = () =>{
                     <p>Items in total: {summaryDetails.totalItems}</p>
                     <button onClick={handleCheckout} className="checkoutBtn">Proceed to Checkout</button>
                 </div>)}
-            {cartItems.length === 0 && (<div className="emptyCartMessage">
+            {!loading && cartItems.length === 0 && (<div className="emptyCartMessage">
                 <h2>Your cart is empty.</h2>
                 <p>Add some products to your cart to see them here.</p>
             </div>)}
@@ -225,7 +228,8 @@ const Cart = () =>{
                 paymentMethod={selectedPayementMethod}
             />
 
-        </div>
+        </div>)}
+        </>
         );
 };
 

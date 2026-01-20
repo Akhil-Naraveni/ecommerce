@@ -7,10 +7,13 @@ import starIcon from "../../icons/star.svg"
 const Products = () =>{
     const [productsList, setProductsList] = useState([]);
     const [wishlist, setWishlist] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch("http://localhost:5000/api/v1/products")
-            .then((response) => response.json())
+            .then((response) =>{
+                setLoading(false);
+                return response.json()})
             .then((data) => setProductsList(data))
             .catch((error) => console.error("Error fetching products:", error));
 
@@ -40,7 +43,8 @@ const Products = () =>{
     };
 
     return(
-        <div className="main">
+        <>
+        {loading? (<p className="loading">Loading.....</p>):(<div className="main">
             <div className="head">
                 <h1>Products</h1>
                 <img src={productIcon} alt="Product Icon" width="40" height="40"/>
@@ -50,7 +54,7 @@ const Products = () =>{
             {productsList.map((product) => (
                 <div className="productcard" key={product._id}>
                     <span className="rating"><img src={starIcon} alt="Star Rating" width="14" height="20"/>{product.rating.rate} ({product.rating.count})</span>
-                    <img src={product.image} alt={product.name} width="200" height="200"/>
+                    <img src={product.image} loading="lazy" alt={product.name} width="200" height="200"/>
                     <h4>{product.name}</h4>
                     <p>{product.description}</p>
                     <p className="price">Price: ${product.price}</p>
@@ -62,7 +66,8 @@ const Products = () =>{
                 </div>
             ))}
             </div>
-        </div>
+        </div>)}
+        </>
     )
 }
 

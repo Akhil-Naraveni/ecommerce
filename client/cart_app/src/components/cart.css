@@ -11,6 +11,7 @@
     background-color: antiquewhite;
     position: sticky;
     top: 0;
+    z-index: 100;
 }
 
 hr{
@@ -24,6 +25,7 @@ hr{
     box-shadow: 2px 2px 6px 4px lightgray;
     padding: 12px;
     gap: 12px;
+    margin-top: 40px;
 }
 .productListItemCtnr{
     width: 62%;
