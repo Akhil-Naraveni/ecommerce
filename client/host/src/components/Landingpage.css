@@ -1,0 +1,88 @@
+.landing-page-container{
+    display: flex;
+    height: 100vh;
+    background: lightsalmon;
+    justify-content: center;
+    align-items: center;
+}
+.page-section{
+
+    display: flex;
+    justify-content: center;
+
+}
+.landing-page-left {
+    width: 46%;
+}
+.landing-page-right {
+    width: 40%;
+    align-items: center;
+}
+.left-content{
+    width: 60%;
+}
+.right-content{
+    width: 100%;
+}
+.left-content h2{
+    font-size: 70px;
+}
+.email-input{
+    height: 40px;
+    border: 3px solid black;
+    width: 50%;
+    box-shadow: 0px 4px 12px white;
+}
+.get-started-button{
+    height: 48px;
+    border: 3px solid black;
+    border-left: 0px;
+    color: white;
+    background-color: black;
+    cursor: pointer;
+}
+.get-started-button:hover{
+    text-decoration: underline;
+}
+
+.left-content p{
+    font-size: 20px;
+}  
+.left-content label{
+    font-size: 18px;
+    display: block;
+}
+.left-content h2 .fashion-text{
+    display: inline-block;
+    text-decoration: line-through;
+    font-size: 60px;
+}
+.left-content h2 .lifestyle-text{
+    color: white;
+}
+.landing-page-left{
+    animation: slideInFromLeft 1s ease-out;
+}
+.right-content{
+    animation: slideDown 1.5s ease-out;
+}
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

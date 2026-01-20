@@ -3,6 +3,9 @@ import { Suspense } from "react";
 import "./Homepage.css";
 const ProductApp = React.lazy(() => import("products_app/Products"));
 const CartApp = React.lazy(() => import("cart_app/Cart"));
+import twitterIcon from "../../icons/twitter.svg"
+import facebookIcon from "../../icons/facebook.svg"
+import instagramIcon from "../../icons/instagram.svg"
 
 const Homepage = () => {
     const [activeTab, setActiveTab] = useState("home");
@@ -15,7 +18,6 @@ const Homepage = () => {
     };
 
     window.addEventListener("cartUpdated", handleCartUpdated);
-
     return (
         <>
             <header>
@@ -25,10 +27,12 @@ const Homepage = () => {
                         <button onClick={() => setActiveTab("home")} className={`navBtn nav-home ${activeTab === "home" ? "selected" : ""}`}>Home</button>
                         <button onClick={() => setActiveTab("products")} className={`navBtn nav-products ${activeTab === "products" ? "selected" : ""}`}>Products</button>
                         <button onClick={() => setActiveTab("cart")} className={`navBtn nav-cart ${activeTab === "cart" ? "selected" : ""}`}>Cart
-                            {true && (
+                            {cartItemCount >0 && (
                                 <span className="badge">{cartItemCount}</span>)}
                         </button>
-                        <button onClick={() => setActiveTab("wishlist")} className={`navBtn nav-wishlist ${activeTab === "wishlist" ? "selected" : ""}`}>Wishlist</button>
+                        <button onClick={() => setActiveTab("wishlist")} className={`navBtn nav-wishlist ${activeTab === "wishlist" ? "selected" : ""}`}>Wishlist
+                            <span className="badge">{0}</span>
+                        </button>
                     </ul>
                 </nav>
             </header>
@@ -60,7 +64,22 @@ const Homepage = () => {
                     </section>)}
             </main>
             <footer>
-                <p>© 2024 My Website</p>
+                <div className="followtext">Follow us on</div>
+                <div className="social-icons">
+                    <div className="icon-container">
+                        <img src={twitterIcon} alt="Twitter Icon" width="24" height="24"/>
+                        <span>GenZTrends</span>
+                    </div>
+                    <div className="icon-container">
+                        <img src={facebookIcon} alt="Facebook Icon" width="24" height="24"/>
+                        <span>GenZTrends</span>
+                    </div>
+                    <div className="icon-container">
+                        <img src={instagramIcon} alt="Instagram Icon" width="24" height="24"/>
+                        <span>@GenZTrends</span>
+                    </div>
+                </div>
+                <div>© 2026 Akhil Naraveni Website</div>
             </footer>
         
         </>
