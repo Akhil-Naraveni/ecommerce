@@ -10,7 +10,7 @@
     margin-bottom: 14px;
     background-color: antiquewhite;
     position: sticky;
-    top: 0;
+    top: 0px;
     z-index: 100;
 }
 
@@ -92,7 +92,8 @@ hr{
     /* background: linear-gradient(135deg, #eef0f4 0%, #d3d4d5 100%); */
     border: 1px solid #e0e6ed;
     position: sticky;
-    top: 90px;
+    top: 160px;
+    align-self: start;
 }
 
 .cartSummaryCtnr h3{

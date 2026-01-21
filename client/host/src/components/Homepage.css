@@ -1,3 +1,6 @@
+#root{
+    padding-top: 60px;
+}
 header{
     position: fixed;
     top: 0;
@@ -73,7 +76,11 @@ footer{
     top: 76px;
     z-index: 500;
 }
-
+.home-section >.cart-section{
+    position: sticky; 
+    top: 0; /* or whatever offset you want */ 
+    align-self: flex-start
+}
 .social-icons{
     display: flex;
     align-items: center;
@@ -86,4 +93,14 @@ footer{
 }
 .followtext{
     text-decoration: underline;
+}
+.logoBtn{
+    border: none;
+    background: white;
+    font-weight: bold;
+    font-size: 30px;
+    color: orange;
+    padding: 4px;
+    box-shadow: 0px 4px 8px;
+    cursor: pointer;
 }

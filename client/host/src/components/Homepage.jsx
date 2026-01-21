@@ -23,7 +23,7 @@ const Homepage = () => {
             <header>
                 <nav>
                     <ul className="navItemCtr">
-                        <button onClick={() => setActiveTab("home")} className="logoBtn">E-Commerce</button>
+                        <button onClick={() => setActiveTab("home")} className="logoBtn">GenZTrenda</button>
                         <button onClick={() => setActiveTab("home")} className={`navBtn nav-home ${activeTab === "home" ? "selected" : ""}`}>Home</button>
                         <button onClick={() => setActiveTab("products")} className={`navBtn nav-products ${activeTab === "products" ? "selected" : ""}`}>Products</button>
                         <button onClick={() => setActiveTab("cart")} className={`navBtn nav-cart ${activeTab === "cart" ? "selected" : ""}`}>Cart
