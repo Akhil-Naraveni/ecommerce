@@ -53,7 +53,7 @@ const Cart = () =>{
     const [loading, setLoading] = useState(true);
 
     const fetchCartItems = async () => {
-        fetch("http://localhost:5000/api/v1/cart/cartitems")
+        fetch("https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems")
             .then(async (response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -93,7 +93,6 @@ const Cart = () =>{
     }, [cartItems]);
 
     window.addEventListener("productAddedToCart", (e) => {
-        console.log("Product added to cart event received:", e.detail);
         fetchCartItems();
     });
     const handleUpdateQuantity = useCallback(async(itemId, delta) => {
@@ -104,7 +103,7 @@ const Cart = () =>{
             await handleRemove(itemId);
             return;
         };
-        fetch(`http://localhost:5000/api/v1/cart/cartitems/${itemId}`, {
+        fetch(`https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems/${itemId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -124,7 +123,7 @@ const Cart = () =>{
         .catch((error) => console.error("Error updating item quantity:", error));
     }, []);
     const handleRemove = useCallback((itemId) => {
-        fetch(`http://localhost:5000/api/v1/cart/cartitems/${itemId}`, {
+        fetch(`https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems/${itemId}`, {
             method: "DELETE",
         })
         .then((response) => {
@@ -158,7 +157,7 @@ const Cart = () =>{
 
     const handlePaymentDone = useCallback(() => {
         setPaymentConfirmed(false);
-         fetch(`http://localhost:5000/api/v1/cart/cartitems`, {
+         fetch(`https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems`, {
             method: "DELETE",
         })
         .then((response) => {

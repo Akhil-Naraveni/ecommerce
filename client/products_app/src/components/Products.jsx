@@ -10,7 +10,7 @@ const Products = () =>{
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/v1/products")
+        fetch("https://ecommerce-hexf.onrender.com/api/v1/products")
             .then((response) =>{
                 setLoading(false);
                 return response.json()})
@@ -20,7 +20,7 @@ const Products = () =>{
     }, []);
 
     const handleAddToCart = (product) => {
-        fetch("http://localhost:5000/api/v1/cart/cartitems", {
+        fetch("https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
