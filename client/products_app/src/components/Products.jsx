@@ -4,6 +4,7 @@ import productIcon from "../../icons/product.svg"
 import wishlistSelectedIcon from "../../icons/wishlist_selected.svg"
 import wishlistUnselectedIcon from "../../icons/wishlist_not_selected.svg"
 import starIcon from "../../icons/star.svg"
+import loadingIcon from "../../icons/loading.svg"
 const Products = () =>{
     const [productsList, setProductsList] = useState([]);
     const [wishlist, setWishlist] = useState([]);
@@ -44,7 +45,12 @@ const Products = () =>{
 
     return(
         <>
-        {loading? (<p className="loading">Loading.....</p>):(<div className="main">
+        {loading? (
+            <>
+            <img src={loadingIcon} alt="Loading" width="80" height="80" className="loadingIcon"/>
+            </>
+        ):
+        (<div className="main">
             <div className="head">
                 <h1>Products</h1>
                 <img src={productIcon} alt="Product Icon" width="40" height="40"/>

@@ -5,7 +5,7 @@ import creditCardIcon from "../../icons/creditcard.svg";
 import paypalIcon from "../../icons/paypal.svg";
 import googlePayIcon from "../../icons/googlepay.svg";
 import applePayIcon from "../../icons/applepay.svg";
-
+import loadingIcon from "../../icons/loading.svg";
 import PaymentModal from "./PaymentModal";
 import PaymentConfirmModal from "./PaymentConfirmModal";
 import "./Cart.css"
@@ -179,7 +179,11 @@ const Cart = () =>{
     ], []);
     return(
         <>
-        {loading? (<p className="loading">Loading.....</p>):(<div className="cartMain">
+        {loading? (<>
+        <img src={loadingIcon} alt="Loading" width="80" height="80" className="loadingIcon"/>
+
+        </>):
+        (<div className="cartMain">
             <div className="cartHeader">
                 <h1>Cart</h1>
                 <img src={cartIcon} alt="Cart Icon" width="40" height="40"/>
