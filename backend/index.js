@@ -10,7 +10,8 @@ const corsOptions = {
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:3002',
-    'https://ecommerce-cart-yd8q.onrender.com'
+    'https://ecommerce-cart-yd8q.onrender.com',
+    'https://ecommerce-products-0eng.onrender.com'
   ],
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   credentials: true
