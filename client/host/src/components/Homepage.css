@@ -81,6 +81,11 @@ footer{
     top: 0; /* or whatever offset you want */ 
     align-self: flex-start
 }
+.home-section > .app-section > .loadingIcon{
+    position: relative;
+    top: 40%;
+    left: 50%;
+}
 .social-icons{
     display: flex;
     align-items: center;
@@ -103,4 +108,20 @@ footer{
     padding: 4px;
     box-shadow: 0px 4px 8px;
     cursor: pointer;
+}
+.cart-only-section > .loadingIcon{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+}
+.products-only-section > .loadingIcon{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+}
+#root{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }

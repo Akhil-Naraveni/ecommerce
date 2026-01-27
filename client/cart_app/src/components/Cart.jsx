@@ -8,7 +8,7 @@ import applePayIcon from "../../icons/applepay.svg";
 import loadingIcon from "../../icons/loading.svg";
 import PaymentModal from "./PaymentModal";
 import PaymentConfirmModal from "./PaymentConfirmModal";
-import "./Cart.css"
+import "./cart.css"
 
 // Memoized Cart Item Component
 // CartItem component with proper display name

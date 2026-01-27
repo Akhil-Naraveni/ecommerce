@@ -454,3 +454,9 @@ hr{
     opacity: 1;
   }
 }
+
+#root > .loadingIcon{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+}

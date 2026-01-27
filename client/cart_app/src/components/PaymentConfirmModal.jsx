@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Confetti from "react-confetti";
-import "./Cart.css"
+import "./cart.css"
 import tickIcon from "../../icons/tick.svg";
 import trackIcon from "../../icons/track.svg";
 
