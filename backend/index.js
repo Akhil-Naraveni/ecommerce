@@ -9,8 +9,7 @@ const corsOptions = { origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.
                     methods: ['GET','POST','PUT','DELETE','OPTIONS'], 
                     credentials: true 
                 }; 
-app.use(cors(corsOptions)); 
-app.options('/*', cors(corsOptions));
+app.use(cors(corsOptions));
 // Connect to MongoDB
 connectDB();
 app.use(express.json());
