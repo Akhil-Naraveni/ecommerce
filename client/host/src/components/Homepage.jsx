@@ -6,6 +6,7 @@ const CartApp = React.lazy(() => import("cart_app/Cart"));
 import twitterIcon from "../../icons/twitter.svg"
 import facebookIcon from "../../icons/facebook.svg"
 import instagramIcon from "../../icons/instagram.svg"
+import profilelogoIcon from "../../icons/profilelogo.svg"
 
 const Homepage = () => {
     const [activeTab, setActiveTab] = useState("home");
@@ -23,7 +24,7 @@ const Homepage = () => {
             <header>
                 <nav>
                     <ul className="navItemCtr">
-                        <button onClick={() => setActiveTab("home")} className="logoBtn">GenZTrenda</button>
+                        {/* <button onClick={() => setActiveTab("home")} className="logoBtn"><img src={brandlogoIcon} height="38px" />GenZ</button> */}
                         <button onClick={() => setActiveTab("home")} className={`navBtn nav-home ${activeTab === "home" ? "selected" : ""}`}>Home</button>
                         <button onClick={() => setActiveTab("products")} className={`navBtn nav-products ${activeTab === "products" ? "selected" : ""}`}>Products</button>
                         <button onClick={() => setActiveTab("cart")} className={`navBtn nav-cart ${activeTab === "cart" ? "selected" : ""}`}>Cart
@@ -33,6 +34,7 @@ const Homepage = () => {
                         <button onClick={() => setActiveTab("wishlist")} className={`navBtn nav-wishlist ${activeTab === "wishlist" ? "selected" : ""}`}>Wishlist
                             <span className="badge">{0}</span>
                         </button>
+                        <button /*onClick={() => setActiveTab("account")}*/ className={`navBtn nav-account ${activeTab === "account" ? "selected" : ""}`}><img src={profilelogoIcon} /></button>
                     </ul>
                 </nav>
             </header>

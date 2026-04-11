@@ -41,7 +41,30 @@ header{
 .nav-wishlist {
   position: relative;
 }
-
+.nav-account {
+    margin-left: auto;
+    margin-right: 50px;
+    border: none;
+}
+.nav-account:hover {
+    background-color: transparent;
+    cursor: pointer;
+}
+.nav-account img {
+    width: 36px;
+    height: 36px;
+    border-radius: 55%;
+    border: 1px solid orangered;
+    padding: 2px;
+}
+.nav-account img:hover {
+    padding: 4px;
+}
+.navBtn.nav-account.selected {
+    background-color: transparent;
+    color: orangered;
+    border: none;
+}
 .badge {
   position: absolute;
   top: -8px;
@@ -76,10 +99,22 @@ footer{
     top: 76px;
     z-index: 500;
 }
-.home-section >.cart-section{
+/* .home-section >.cart-section{
     position: sticky; 
-    top: 0; /* or whatever offset you want */ 
+    top: 0;
     align-self: flex-start
+} */
+.home-section .modal-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
 }
 .home-section > .app-section > .loadingIcon{
     position: relative;
