@@ -82,8 +82,17 @@ const Cart = () =>{
         // Fetch cart items on component mount
         fetchCartItems();
 
+        // Define event handler
+        const handleProductAdded = () => {
+            fetchCartItems();
+        };
+
+        // Add event listener
+        window.addEventListener("productAddedToCart", handleProductAdded);
+
+        // Cleanup function
         return () => {
-            window.removeEventListener("productAddedToCart", fetchCartItems);
+            window.removeEventListener("productAddedToCart", handleProductAdded);
         };
     }, []);
 
@@ -91,10 +100,6 @@ const Cart = () =>{
     useEffect(() => {
         cartItemsRef.current = cartItems;
     }, [cartItems]);
-
-    window.addEventListener("productAddedToCart", (e) => {
-        fetchCartItems();
-    });
     const handleUpdateQuantity = useCallback(async(itemId, delta) => {
         const item = cartItemsRef.current.find((item) => item._id === itemId);
         if (!item) return;
