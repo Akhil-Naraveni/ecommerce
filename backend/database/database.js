@@ -90,6 +90,96 @@ const sampleData = [
     description: "Professional running shoes with cushioned sole and excellent grip",
     category: "Footwear",
     rating: { rate: 4.8, count: 890 }
+  },
+  {
+    id: 11,
+    name: "Oversized Hoodie",
+    price: 1699,
+    image: "https://media.istockphoto.com/id/1293292206/photo/young-beautiful-girl-in-a-white-hoodie-posing-warm-oversized-hoodie-with-an-hood-stylish.webp?a=1&b=1&s=612x612&w=0&k=20&c=AyptsSWZPenmjbLZjDVrckXcr50Yqx2ZAW3SDi3drGg=",
+    description: "Soft oversized hoodie with a relaxed fit for everyday comfort",
+    category: "Clothing",
+    rating: { rate: 4.6, count: 412 }
+  },
+  {
+    id: 12,
+    name: "Minimal Sneakers",
+    price: 2899,
+    image: "https://images.unsplash.com/photo-1573875133340-0b589f59a8c4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TWluaW1hbCUyMFNuZWFrZXJzfGVufDB8fDB8fHww",
+    description: "Clean low-top sneakers that pair with everything",
+    category: "Footwear",
+    rating: { rate: 4.5, count: 680 }
+  },
+  {
+    id: 13,
+    name: "Athleisure Track Jacket",
+    price: 2199,
+    image: "https://media.istockphoto.com/id/1183553994/photo/childrens-fleece-jacket.webp?a=1&b=1&s=612x612&w=0&k=20&c=CEtEmFNAXWjQfjan-EGiCfop5hiRnQiX3B7yahcURiQ=",
+    description: "Lightweight zip-up track jacket for gym and streetwear",
+    category: "Sportswear",
+    rating: { rate: 4.4, count: 275 }
+  },
+  {
+    id: 14,
+    name: "Cargo Joggers",
+    price: 1499,
+    image: "https://media.istockphoto.com/id/695659676/photo/two-people-race-together-riding-rollerblades.jpg?s=612x612&w=0&k=20&c=Ri7p2VukcDzsK2imbKwdL6h7sso3XC8RLIvRDIZRMQM=",
+    description: "Tapered cargo joggers with stretch waistband and utility pockets",
+    category: "Clothing",
+    rating: { rate: 4.3, count: 198 }
+  },
+  {
+    id: 15,
+    name: "Training Tank Top",
+    price: 499,
+    image: "https://images.unsplash.com/photo-1776533874754-cd796b46ff82?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8VHJhaW5pbmclMjBUYW5rJTIwVG9wfGVufDB8fDB8fHww",
+    description: "Breathable training tank with quick-dry fabric",
+    category: "Sportswear",
+    rating: { rate: 4.2, count: 154 }
+  },
+  {
+    id: 16,
+    name: "Canvas Tote Bag",
+    price: 699,
+    image: "https://plus.unsplash.com/premium_photo-1681415081017-2d7cbc1592c9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Q2FudmFzJTIwVG90ZSUyMEJhZ3xlbnwwfHwwfHx8MA%3D%3D",
+    description: "Durable canvas tote bag for daily carry",
+    category: "Clothing",
+    rating: { rate: 4.1, count: 92 }
+  },
+  {
+    id: 17,
+    name: "Slip-On Loafers",
+    price: 3299,
+    image: "https://images.unsplash.com/photo-1678784973073-f6a227408e81?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fFNsaXAtT24lMjBMb2FmZXJzfGVufDB8fDB8fHww",
+    description: "Smart slip-on loafers for casual and semi-formal outfits",
+    category: "Footwear",
+    rating: { rate: 4.4, count: 141 }
+  },
+  {
+    id: 18,
+    name: "High-Waist Shorts",
+    price: 899,
+    image: "https://plus.unsplash.com/premium_photo-1689575249309-79f1308d6180?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGlnaC1XYWlzdCUyMFNob3J0c3xlbnwwfHwwfHx8MA%3D%3D",
+    description: "High-waist shorts with a flattering fit for summer days",
+    category: "Clothing",
+    rating: { rate: 4.3, count: 233 }
+  },
+  {
+    id: 19,
+    name: "Compression Tights",
+    price: 1299,
+    image: "https://images.unsplash.com/photo-1610360414307-4264b6649236?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Q29tcHJlc3Npb24lMjBUaWdodHN8ZW58MHx8MHx8fDA%3D",
+    description: "Compression tights built for training, recovery, and movement",
+    category: "Sportswear",
+    rating: { rate: 4.6, count: 501 }
+  },
+  {
+    id: 20,
+    name: "Chunky Sole Sneakers",
+    price: 3599,
+    image: "https://images.unsplash.com/photo-1657194001988-9cbdbc59f115?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fENodW5reSUyMFNvbGUlMjBTbmVha2Vyc3xlbnwwfHwwfHx8MA%3D%3D",
+    description: "Trend-forward sneakers with a chunky sole and all-day comfort",
+    category: "Footwear",
+    rating: { rate: 4.7, count: 742 }
   }
 ];
 

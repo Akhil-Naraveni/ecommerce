@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const Cart = require('../models/cart');
 const Product = require('../models/products');
+const { validateAddToCart, validateUpdateQuantity, validateDeleteItem } = require('../middleware/validation');
+const { authenticateToken } = require('../middleware/auth');
 
-// Get cart by ID
-router.get('/cartitems', async (req, res) =>{
+// Get cart by user ID
+router.get('/cartitems', authenticateToken, async (req, res) =>{
     try{
-        const cart =await Cart.findOne().populate('items.productId');
+        const cart = await Cart.findOne({ userId: req.user.userId }).populate('items.productId');
         if(!cart){
-            return res.status(404).json({ message: 'Cart not found' });
+            // Create a new cart for the user if it doesn't exist
+            const newCart = new Cart({ userId: req.user.userId, items: [] });
+            await newCart.save();
+            return res.json({ cart: { items: [] }, totalPrice: 0, totalNoOfItems: 0 });
         }
         // Filter out items where product doesn't exist
         cart.items = cart.items.filter(item => item.productId !== null);
@@ -33,16 +38,16 @@ router.get('/cartitems', async (req, res) =>{
     }
 })
 
-router.post('/cartitems', async (req, res) =>{
+router.post('/cartitems', authenticateToken, validateAddToCart, async (req, res) =>{
     const {productId, quantity = 1} = req.body;
     try{
         const product = await Product.findById(productId);
         if(!product){
             return res.status(404).json({ message: 'Product not found' });
         }
-        let cart = await Cart.findOne();
+        let cart = await Cart.findOne({ userId: req.user.userId });
         if(!cart){
-            cart = new Cart({ items: [] });
+            cart = new Cart({ userId: req.user.userId, items: [] });
             await cart.save();
         }
         const existingItem = cart.items.find(item => item.productId.toString() === productId);
@@ -59,11 +64,11 @@ router.post('/cartitems', async (req, res) =>{
     }
 })
 
-router.put('/cartitems/:itemId', async (req, res) =>{
+router.put('/cartitems/:itemId', authenticateToken, validateUpdateQuantity, async (req, res) =>{
     const { itemId } = req.params;
     const { quantity } = req.body;
     try{
-        const cart = await Cart.findOne();
+        const cart = await Cart.findOne({ userId: req.user.userId });
         if(!cart){
             return res.status(404).json({ message: 'Cart not found' });
         }
@@ -89,10 +94,10 @@ router.put('/cartitems/:itemId', async (req, res) =>{
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 })
-router.delete('/cartitems/:itemId', async (req, res) =>{
+router.delete('/cartitems/:itemId', authenticateToken, validateDeleteItem, async (req, res) =>{
     const { itemId } = req.params;
     try{
-        const cart = await Cart.findOne();
+        const cart = await Cart.findOne({ userId: req.user.userId });
         if(!cart){
             return res.status(404).json({ message: 'Cart not found' });
         }
@@ -117,9 +122,9 @@ router.delete('/cartitems/:itemId', async (req, res) =>{
     }
 })
 
-router.delete('/cartitems', async (req, res) => {
+router.delete('/cartitems', authenticateToken, async (req, res) => {
     try {
-        const cart = await Cart.findOne();
+        const cart = await Cart.findOne({ userId: req.user.userId });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
