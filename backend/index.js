@@ -8,14 +8,31 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS configuration from environment variables
-const corsOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002').split(',');
+// Set `CORS_ORIGINS` to a comma-separated list of allowed frontend origins, e.g.:
+// https://your-host.onrender.com,https://your-products.onrender.com
+const corsOrigins = (process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:3001,http://localhost:3002,https://ecommerce-cart-yd8q.onrender.com,https://ecommerce-products-0eng.onrender.com,https://akhil-ecommerce.onrender.com")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+const allowAllOrigins = corsOrigins.includes("*");
+
 const corsOptions = {
-  origin: corsOrigins,
-  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow non-browser clients (no Origin header) like curl/postman
+    if (!origin) return callback(null, true);
+    if (allowAllOrigins) return callback(null, true);
+    if (corsOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // Connect to MongoDB
 connectDB();
