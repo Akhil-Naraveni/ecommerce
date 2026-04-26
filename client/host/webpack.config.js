@@ -50,10 +50,10 @@ module.exports = {
       name: "host",
       filename: "remoteEntry.js",
       remotes: {
-        cart_app: "cart_app@http://localhost:3001/remoteEntry.js",
-        products_app: "products_app@http://localhost:3002/remoteEntry.js",
-        //cart_app: "cart_app@https://ecommerce-cart-yd8q.onrender.com/remoteEntry.js",
-        //products_app: "products_app@https://ecommerce-products-0eng.onrender.com/remoteEntry.js",
+        //cart_app: "cart_app@http://localhost:3001/remoteEntry.js",
+        //products_app: "products_app@http://localhost:3002/remoteEntry.js",
+        cart_app: "cart_app@https://ecommerce-cart-yd8q.onrender.com/remoteEntry.js",
+        products_app: "products_app@https://ecommerce-products-0eng.onrender.com/remoteEntry.js",
       },
       exposes: {},
       shared: {
