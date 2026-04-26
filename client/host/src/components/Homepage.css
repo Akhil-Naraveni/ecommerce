@@ -12,6 +12,31 @@ header{
 .navItemCtr {
     display: flex;
     gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.searchCtr{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+.searchInput{
+    height: 40px;
+    width: 260px;
+    border: 1px solid lightgrey;
+    padding: 0 10px;
+}
+.searchSelect{
+    height: 40px;
+    border: 1px solid lightgrey;
+    background: white;
+    padding: 0 8px;
+}
+.searchInput:focus, .searchSelect:focus{
+    outline: 2px solid rgba(255, 140, 66, 0.35);
+    outline-offset: 1px;
 }
 .home-section{
     display: flex;
@@ -159,4 +184,13 @@ footer{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+@media screen and (max-width: 767px) {
+  .navItemCtr{
+    gap: 10px;
+  }
+  .searchInput{
+    width: 180px;
+  }
 }

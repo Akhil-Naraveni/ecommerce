@@ -2,6 +2,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
 const deps = require("./package.json").dependencies;
+const webpack = require("webpack");
+require("dotenv").config();
 
 module.exports = {
   mode: "development",
@@ -39,14 +41,19 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      "process.env.REACT_APP_API_BASE_URL": JSON.stringify(
+        process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api/v1"
+      ),
+    }),
     new ModuleFederationPlugin({
       name: "host",
       filename: "remoteEntry.js",
       remotes: {
-        //cart_app: "cart_app@http://localhost:3001/remoteEntry.js",
-        //products_app: "products_app@http://localhost:3002/remoteEntry.js",
-        cart_app: "cart_app@https://ecommerce-cart-yd8q.onrender.com/remoteEntry.js",
-        products_app: "products_app@https://ecommerce-products-0eng.onrender.com/remoteEntry.js",
+        cart_app: "cart_app@http://localhost:3001/remoteEntry.js",
+        products_app: "products_app@http://localhost:3002/remoteEntry.js",
+        //cart_app: "cart_app@https://ecommerce-cart-yd8q.onrender.com/remoteEntry.js",
+        //products_app: "products_app@https://ecommerce-products-0eng.onrender.com/remoteEntry.js",
       },
       exposes: {},
       shared: {

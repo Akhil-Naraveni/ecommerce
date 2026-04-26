@@ -10,6 +10,8 @@ import PaymentModal from "./PaymentModal";
 import PaymentConfirmModal from "./PaymentConfirmModal";
 import "./cart.css"
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api/v1';
+
 // Memoized Cart Item Component
 // CartItem component with proper display name
 function CartItem({ item, onUpdateQuantity, onRemove }) {
@@ -53,29 +55,39 @@ const Cart = () =>{
     const [loading, setLoading] = useState(true);
 
     const fetchCartItems = async () => {
-        fetch("https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems")
-            .then(async (response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                console.warn('No auth token found');
                 setLoading(false);
-                const resData = await response.json();
-                return resData
-            })
-            .then((data) => {
-                const items = data.cart.items
-                setSummaryDetails({
-                    totalItems: data.totalNoOfItems,
-                    totalPrice: data.totalPrice
-                });
-                setCartItems(items);
-                const cartUpdatedEvent = new CustomEvent("cartUpdated", { detail: { cartItems: items } });
-                window.dispatchEvent(cartUpdatedEvent);
-            })
-            .catch((error) => {
-                console.error("Error fetching cart items:", error);
-                setCartItems([]);
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE_URL}/cart/cartitems`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            setLoading(false);
+            const resData = await response.json();
+            
+            const items = resData.cart.items;
+            setSummaryDetails({
+                totalItems: resData.totalNoOfItems,
+                totalPrice: resData.totalPrice
+            });
+            setCartItems(items);
+            const cartUpdatedEvent = new CustomEvent("cartUpdated", { detail: { cartItems: items } });
+            window.dispatchEvent(cartUpdatedEvent);
+        } catch (error) {
+            console.error("Error fetching cart items:", error);
+            setCartItems([]);
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -108,39 +120,49 @@ const Cart = () =>{
             await handleRemove(itemId);
             return;
         };
-        fetch(`https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems/${itemId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ quantity: newQuantity }),
-        })
-        .then((response) => {
+        
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch(`${API_BASE_URL}/cart/cartitems/${itemId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ quantity: newQuantity }),
+            });
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
-        })
-        .then(() => {
+            await response.json();
             fetchCartItems();
-        
-        })
-        .catch((error) => console.error("Error updating item quantity:", error));
+        } catch (error) {
+            console.error("Error updating item quantity:", error);
+        }
     }, []);
     const handleRemove = useCallback((itemId) => {
-        fetch(`https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems/${itemId}`, {
-            method: "DELETE",
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(() => {
-            fetchCartItems();
-        })
-        .catch((error) => console.error("Error removing item from cart:", error));
+        try {
+            const token = localStorage.getItem('authToken');
+            fetch(`${API_BASE_URL}/cart/cartitems/${itemId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(() => {
+                fetchCartItems();
+            })
+            .catch((error) => console.error("Error removing item from cart:", error));
+        } catch (error) {
+            console.error("Error in handleRemove:", error);
+        }
     }, []);
 
     const handleCheckout = useCallback(() => {
@@ -162,19 +184,27 @@ const Cart = () =>{
 
     const handlePaymentDone = useCallback(() => {
         setPaymentConfirmed(false);
-         fetch(`https://ecommerce-hexf.onrender.com/api/v1/cart/cartitems`, {
-            method: "DELETE",
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(() => {
-            fetchCartItems();
-        })
-        .catch((error) => console.error("Error clearing cart after payment:", error)); 
+        try {
+            const token = localStorage.getItem('authToken');
+            fetch(`${API_BASE_URL}/cart/cartitems`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(() => {
+                fetchCartItems();
+            })
+            .catch((error) => console.error("Error clearing cart after payment:", error));
+        } catch (error) {
+            console.error("Error in handlePaymentDone:", error);
+        }
     }, []);
     const paymentoptions = useMemo(() => [
         {id : "credit-card", name: "Credit Card", icon : creditCardIcon, description: "Visa, MasterCard, American Express"},

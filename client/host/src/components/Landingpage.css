@@ -60,6 +60,18 @@
 .left-content h2 .lifestyle-text{
     color: white;
 }
+.landing-auth-links{
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 14px;
+}
+.landing-auth-link{
+    color: black;
+    font-weight: 600;
+    text-decoration: underline;
+}
 .landing-page-left{
     animation: slideInFromLeft 1s ease-out;
 }

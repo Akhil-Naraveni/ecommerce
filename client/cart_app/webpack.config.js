@@ -2,6 +2,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
 const deps = require("./package.json").dependencies;
+const webpack = require("webpack");
+require("dotenv").config();
 
 module.exports = {
   mode: "development",
@@ -39,6 +41,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      "process.env.REACT_APP_API_BASE_URL": JSON.stringify(
+        process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api/v1"
+      ),
+    }),
     new ModuleFederationPlugin({
       name: "cart_app",
       filename: "remoteEntry.js",
