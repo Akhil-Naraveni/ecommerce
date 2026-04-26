@@ -32,7 +32,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+// Express 5 + path-to-regexp does not accept "*" as a route pattern here.
+// Use a regex to match all paths for preflight requests.
+app.options(/.*/, cors(corsOptions));
 
 // Connect to MongoDB
 connectDB();
