@@ -1,5 +1,9 @@
+:root{
+    --shell-header-offset: 60px;
+}
+
 #root{
-    padding-top: 60px;
+    padding-top: var(--shell-header-offset);
 }
 header{
     position: fixed;
@@ -67,9 +71,12 @@ header{
   position: relative;
 }
 .nav-account {
+    border: none;
+}
+.nav-accountWrap{
     margin-left: auto;
     margin-right: 50px;
-    border: none;
+    position: relative;
 }
 .nav-account:hover {
     background-color: transparent;
@@ -89,6 +96,37 @@ header{
     background-color: transparent;
     color: orangered;
     border: none;
+}
+.accountMenu{
+    position: absolute;
+    right: 0;
+    top: 46px;
+    background: white;
+    border: 1px solid lightgrey;
+    border-radius: 6px;
+    min-width: 180px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    padding: 8px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.accountName{
+    font-weight: 700;
+    padding: 8px 10px;
+    border-bottom: 1px solid #efefef;
+    text-align: left;
+}
+.accountLogoutBtn{
+    height: 40px;
+    border: 1px solid rgba(255, 68, 68, 0.6);
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.accountLogoutBtn:hover{
+    background: rgba(255, 68, 68, 0.08);
 }
 .badge {
   position: absolute;
@@ -116,13 +154,19 @@ footer{
     align-items: center;
     gap: 6px;
 }
-.home-section > .products-section > .main > .head {
-    top: 76px;
-    z-index: 500;
+/* Offset remote sticky headers so they don't sit under the fixed shell header */
+.home-section .main > .head,
+.products-only-section .main > .head{
+    top: var(--shell-header-offset);
 }
-.home-section >.cart-section >.cartMain > .cartHeader{
-    top: 76px;
-    z-index: 500;
+
+.home-section .cartMain > .cartHeader,
+.cart-only-section .cartMain > .cartHeader{
+    top: var(--shell-header-offset);
+}
+
+.wishlist-only-section .wishlistHead{
+    top: var(--shell-header-offset);
 }
 /* .home-section >.cart-section{
     position: sticky; 

@@ -21,6 +21,19 @@ const Products = () =>{
     }, []);
 
     useEffect(() => {
+        const handleWishlistSync = (event) => {
+            const ids = Array.isArray(event?.detail?.ids) ? event.detail.ids : [];
+            setWishlist(ids);
+        };
+
+        window.addEventListener("wishlistSync", handleWishlistSync);
+        // Ask host for current wishlist state (host will respond with wishlistSync).
+        window.dispatchEvent(new CustomEvent("wishlistRequest"));
+
+        return () => window.removeEventListener("wishlistSync", handleWishlistSync);
+    }, []);
+
+    useEffect(() => {
         const handleSearchChanged = (event) => {
             const detail = event?.detail || {};
             setSearchQuery(detail.query || "");
@@ -78,10 +91,15 @@ const Products = () =>{
     };
 
     const handleWishlist = (product) => {
-        if (wishlist.includes(product._id)) {
-            setWishlist(prevWishlist => prevWishlist.filter(id => id !== product._id));
+        const id = product?._id;
+        if (!id) return;
+
+        if (wishlist.includes(id)) {
+            setWishlist(prevWishlist => prevWishlist.filter(x => x !== id));
+            window.dispatchEvent(new CustomEvent("wishlistUpdated", { detail: { action: "remove", productId: id, product } }));
         } else {
-            setWishlist((prevWishlist) => [...prevWishlist, product._id]);
+            setWishlist((prevWishlist) => [...prevWishlist, id]);
+            window.dispatchEvent(new CustomEvent("wishlistUpdated", { detail: { action: "add", productId: id, product } }));
         }
     };
 

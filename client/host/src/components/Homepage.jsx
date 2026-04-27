@@ -1,5 +1,6 @@
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 
 const ProductApp = React.lazy(() => import("products_app/Products"));
@@ -12,15 +13,25 @@ import profilelogoIcon from "../../icons/profilelogo.svg";
 
 import { selectCartTotalQuantity, setCartFromItems } from "../store/cartSummarySlice";
 import { selectProductCategory, selectProductQuery, setProductCategory, setProductQuery } from "../store/productSearchSlice";
+import { addWishlistItem, removeWishlistItem, selectWishlistCount, selectWishlistIds } from "../store/wishlistSlice";
 import useDebouncedValue from "../hooks/useDebouncedValue";
+import WishlistPage from "./WishlistPage";
+import { cartAPI } from "../services/apiService";
+import { logoutUser, selectAuthUser } from "../store/authSlice";
 
 const Homepage = () => {
   const [activeTab, setActiveTab] = useState("home");
+  const [accountOpen, setAccountOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const accountRef = useRef(null);
 
   const cartTotalQuantity = useSelector(selectCartTotalQuantity);
+  const wishlistCount = useSelector(selectWishlistCount);
+  const wishlistIds = useSelector(selectWishlistIds);
   const productQuery = useSelector(selectProductQuery);
   const productCategory = useSelector(selectProductCategory);
+  const authUser = useSelector(selectAuthUser);
 
   const debouncedQuery = useDebouncedValue(productQuery, 300);
   const debouncedCategory = useDebouncedValue(productCategory, 150);
@@ -38,9 +49,115 @@ const Homepage = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    let cancelled = false;
+
+    const refreshCartSummary = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) return;
+        const res = await cartAPI.getItems();
+        const items = res?.data?.cart?.items || [];
+        if (!cancelled) dispatch(setCartFromItems(items));
+      } catch {
+        // Ignore: cart summary shouldn't break the shell.
+      }
+    };
+
+    // Initial load (important for Products-only / Wishlist tabs where cart_app isn't mounted)
+    refreshCartSummary();
+
+    const handleProductAddedToCart = () => {
+      refreshCartSummary();
+    };
+
+    window.addEventListener("productAddedToCart", handleProductAddedToCart);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("productAddedToCart", handleProductAddedToCart);
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleWishlistUpdated = (event) => {
+      const detail = event?.detail || {};
+      const product = detail.product;
+      const action = detail.action;
+      const id = product?._id || product?.id || detail.productId || detail.id;
+
+      if (action === "remove" && id) {
+        dispatch(removeWishlistItem(id));
+      } else if (action === "add" && product) {
+        dispatch(addWishlistItem(product));
+      } else if (action === "toggle" && product && id) {
+        // fallback if caller only sends "toggle" + "selected"
+        if (detail.selected === false) dispatch(removeWishlistItem(id));
+        else dispatch(addWishlistItem(product));
+      }
+    };
+
+    const handleWishlistRequest = () => {
+      window.dispatchEvent(new CustomEvent("wishlistSync", { detail: { ids: wishlistIds } }));
+    };
+
+    window.addEventListener("wishlistUpdated", handleWishlistUpdated);
+    window.addEventListener("wishlistRequest", handleWishlistRequest);
+    return () => {
+      window.removeEventListener("wishlistUpdated", handleWishlistUpdated);
+      window.removeEventListener("wishlistRequest", handleWishlistRequest);
+    };
+  }, [dispatch, wishlistIds]);
+
+  useEffect(() => {
+    // Keep products_app in sync when it is mounted.
+    window.dispatchEvent(new CustomEvent("wishlistSync", { detail: { ids: wishlistIds } }));
+  }, [wishlistIds]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (wishlistCount <= 0) return;
+      // Standard browser prompt; custom text is ignored by most browsers.
+      e.preventDefault();
+      const msg = "You have items in your wishlist. Refreshing will clear them unless you add them to cart.";
+      e.returnValue = msg;
+      return msg;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [wishlistCount]);
+
+  useEffect(() => {
     const evt = new CustomEvent("productsSearchChanged", { detail: searchEventDetail });
     window.dispatchEvent(evt);
   }, [searchEventDetail]);
+
+  useEffect(() => {
+    const handleDocMouseDown = (e) => {
+      if (!accountOpen) return;
+      if (!accountRef.current) return;
+      if (accountRef.current.contains(e.target)) return;
+      setAccountOpen(false);
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setAccountOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleDocMouseDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleDocMouseDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [accountOpen]);
+
+  const displayName = (authUser?.name || authUser?.email || "").trim();
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    setAccountOpen(false);
+    navigate("/login", { replace: true });
+  };
 
   return (
     <>
@@ -62,7 +179,7 @@ const Homepage = () => {
               Products
             </button>
 
-            <div className="searchCtr">
+            {(activeTab === "home" || activeTab === "products") && <div className="searchCtr">
               <input
                 className="searchInput"
                 type="search"
@@ -82,7 +199,7 @@ const Homepage = () => {
                 <option value="Sportswear">Sportswear</option>
                 <option value="Footwear">Footwear</option>
               </select>
-            </div>
+            </div>}
 
             <button
               type="button"
@@ -98,11 +215,29 @@ const Homepage = () => {
               className={`navBtn nav-wishlist ${activeTab === "wishlist" ? "selected" : ""}`}
             >
               Wishlist
-              <span className="badge">{0}</span>
+              {wishlistCount > 0 && <span className="badge">{wishlistCount}</span>}
             </button>
-            <button type="button" className={`navBtn nav-account ${activeTab === "account" ? "selected" : ""}`}>
-              <img src={profilelogoIcon} alt="Profile" />
-            </button>
+            <div className="nav-accountWrap" ref={accountRef}>
+              <button
+                type="button"
+                className={`navBtn nav-account ${accountOpen ? "selected" : ""}`}
+                onClick={() => setAccountOpen((v) => !v)}
+                aria-haspopup="menu"
+                aria-expanded={accountOpen}
+              >
+                <img src={profilelogoIcon} alt="Profile" />
+              </button>
+              {accountOpen && (
+                <div className="accountMenu" role="menu">
+                  <div className="accountName" role="menuitem">
+                    {displayName || "Account"}
+                  </div>
+                  <button type="button" className="accountLogoutBtn" onClick={handleLogout} role="menuitem">
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       </header>
@@ -134,6 +269,11 @@ const Homepage = () => {
             <Suspense fallback={<div>Loading Cart...</div>}>
               <CartApp />
             </Suspense>
+          </section>
+        )}
+        {activeTab === "wishlist" && (
+          <section className="wishlist-only-section">
+            <WishlistPage />
           </section>
         )}
       </main>
