@@ -1,4 +1,4 @@
-import React,{ useEffect, useMemo, useState} from "react";
+import React,{ useEffect, useMemo, useState, useTransition} from "react";
 import "./Products.css";
 import productIcon from "../../icons/product.svg"
 import wishlistSelectedIcon from "../../icons/wishlist_selected.svg"
@@ -15,6 +15,7 @@ const Products = () =>{
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchCategory, setSearchCategory] = useState("all");
+    const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
         fetchProducts();
@@ -36,8 +37,10 @@ const Products = () =>{
     useEffect(() => {
         const handleSearchChanged = (event) => {
             const detail = event?.detail || {};
-            setSearchQuery(detail.query || "");
-            setSearchCategory(detail.category || "all");
+            startTransition(() => {
+                setSearchQuery(detail.query || "");
+                setSearchCategory(detail.category || "all");
+             });
         };
 
         window.addEventListener("productsSearchChanged", handleSearchChanged);
@@ -135,6 +138,11 @@ const Products = () =>{
             </div>
             <hr/>
             <div className="productscontainer">
+            {isPending && (
+                <div className="loadingOverlay">
+                    <img src={loadingIcon} alt="Loading" width="80" height="80" className="loadingIcon"/>
+                </div>
+            )}
             {filteredProducts.map((product) => (
                 <div className="productcard" key={product._id}>
                     <span className="rating"><img src={starIcon} alt="Star Rating" width="14" height="20"/>{product.rating.rate} ({product.rating.count})</span>

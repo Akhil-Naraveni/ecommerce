@@ -65,4 +65,10 @@ export const authAPI = {
     }
 };
 
+// AI API calls
+export const aiAPI = {
+    askShoppingAssistant: (message) =>
+        apiClient.post('/ai/shopping-assistant', { message })
+};
+
 export default apiClient;

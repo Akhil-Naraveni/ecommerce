@@ -16,6 +16,7 @@ import { selectProductCategory, selectProductQuery, setProductCategory, setProdu
 import { addWishlistItem, removeWishlistItem, selectWishlistCount, selectWishlistIds } from "../store/wishlistSlice";
 import useDebouncedValue from "../hooks/useDebouncedValue";
 import WishlistPage from "./WishlistPage";
+import ChatBot from "./ChatBot";
 import { cartAPI } from "../services/apiService";
 import { logoutUser, selectAuthUser } from "../store/authSlice";
 
@@ -296,6 +297,7 @@ const Homepage = () => {
         </div>
         <div>(c) 2026 Akhil Naraveni Website</div>
       </footer>
+      <ChatBot />
     </>
   );
 };
