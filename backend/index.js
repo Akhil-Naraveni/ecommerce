@@ -44,10 +44,12 @@ app.use(express.json());
 const productRoutes = require('./routes/product');
 const cartRoutes = require('./routes/cart');
 const authRoutes = require('./routes/auth');
+const aiRoutes = require('./routes/ai');
 
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/cart', cartRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/ai', aiRoutes);
 
 // Global error handler (must be last)
 app.use(errorHandler);
