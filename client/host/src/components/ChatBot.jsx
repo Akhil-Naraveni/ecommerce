@@ -10,6 +10,7 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { aiAPI } from "../services/apiService";
+import chatbotIcon from "../../icons/chatbot.svg";
 
 const QUICK_PROMPTS = [
     "Suggest me good summer wear",
@@ -224,8 +225,6 @@ const ChatBot = () => {
                 onClick={() => setIsOpen((currentValue) => !currentValue)}
                 aria-label={isOpen ? "Close AI shopping assistant" : "Open AI shopping assistant"}
                 style={{
-                    width: 76,
-                    height: 74,
                     borderRadius: "50%",
                     border: "2px solid #fff",
                     background: "darkOrange",
@@ -235,7 +234,11 @@ const ChatBot = () => {
                     boxShadow: "0 10px 24px rgba(0, 0, 0, 0.24)"
                 }}
             >
-                GenZ AI
+                <img
+                    src={chatbotIcon}
+                    alt="Chatbot Icon"
+                    style={{ width: 62, height: 62 }}
+                />
             </button>
         </div>
     );
