@@ -6,12 +6,33 @@ const webpack = require("webpack");
 require("dotenv").config();
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/index",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].[contenthash].js",
+    chunkFilename: "[name].[contenthash].js",
     clean: true,
+  },
+  optimization: {
+    minimize: true,
+    splitChunks: {
+      chunks: "all",
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          priority: 10,
+          reuseExistingChunk: true,
+          enforce: true,
+        },
+        common: {
+          minChunks: 2,
+          priority: 5,
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
   devServer: {
     port: 3000,
