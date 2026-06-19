@@ -18,6 +18,10 @@ module.exports = {
     minimize: true,
     splitChunks: {
       chunks: "all",
+      maxAsyncRequests: 30,
+      maxInitialRequests: 30,
+      minSize: 20000,
+      maxSize: 244000,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
@@ -25,11 +29,13 @@ module.exports = {
           priority: 10,
           reuseExistingChunk: true,
           enforce: true,
+          maxSize: 244000,
         },
         common: {
           minChunks: 2,
           priority: 5,
           reuseExistingChunk: true,
+          maxSize: 244000,
         },
       },
     },
@@ -75,8 +81,9 @@ module.exports = {
       },
       remotes: {},
       shared: {
-        react: { singleton: true, requiredVersion: deps.react },
-        "react-dom": { singleton: true, requiredVersion: deps["react-dom"] },
+        react: { singleton: true, requiredVersion: deps.react, strictVersion: false },
+        "react-dom": { singleton: true, requiredVersion: deps["react-dom"], strictVersion: false },
+        axios: { singleton: true, requiredVersion: deps.axios, strictVersion: false },
       },
     }),
     new HtmlWebpackPlugin({
