@@ -1,0 +1,61 @@
+name: GenZTrends CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Validate GenZTrends
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Download the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 3. Install parent client dependencies
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+
+      # 4. Install Host dependencies
+      - name: Install Host dependencies
+        working-directory: client/host
+        run: npm ci
+
+      # 5. Install Cart MFE dependencies
+      - name: Install Cart dependencies
+        working-directory: client/cart_app
+        run: npm ci
+
+      # 6. Install Products MFE dependencies
+      - name: Install Products dependencies
+        working-directory: client/products_app
+        run: npm ci
+
+      # 7. Build all three micro-frontends
+      - name: Build all micro-frontends
+        working-directory: client
+        run: npm run build
+
+      # 8. Install backend dependencies
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      # 9. Check backend JavaScript syntax
+      - name: Check backend syntax
+        working-directory: backend
+        run: node --check index.js
