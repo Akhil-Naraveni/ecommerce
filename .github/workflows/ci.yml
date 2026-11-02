@@ -50,12 +50,17 @@ jobs:
         working-directory: client
         run: npm run build
 
-      # 8. Install backend dependencies
+      # 8. Run Host React component tests
+      - name: Run Host tests
+        working-directory: client/host
+        run: npm test -- --runInBand
+
+      # 9. Install backend dependencies
       - name: Install backend dependencies
         working-directory: backend
         run: npm ci
 
-      # 9. Check backend JavaScript syntax
+      # 10. Check backend JavaScript syntax
       - name: Check backend syntax
         working-directory: backend
         run: node --check index.js
