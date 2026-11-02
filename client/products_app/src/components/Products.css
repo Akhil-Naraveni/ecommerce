@@ -57,7 +57,7 @@
     justify-content: space-evenly;
 }
 .addtocartbtn:hover{
-    background-color: rgb(255 118 94);
+    background-color: rgb(255 118 95);
     text-decoration: underline;
 }
 .productcard > img{
