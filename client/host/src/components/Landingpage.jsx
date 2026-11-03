@@ -38,7 +38,7 @@ const Landingpage = () => {
         <div className="right-content section-content">
           <input ref={inputRef} type="email" placeholder="Enter your email" className="email-input" />
           <button onClick={handleVerification} className="get-started-button">
-            Let's Go
+            Let&apos;s Go
           </button>
           <div className="landing-auth-links">
             <span>Already have an account?</span>
@@ -53,4 +53,3 @@ const Landingpage = () => {
 };
 
 export default Landingpage;
-

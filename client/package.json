@@ -9,7 +9,8 @@
         "build": "npm run build:host && npm run build:cart && npm run build:products",
         "build:host": "cd host && npm run build",
         "build:cart": "cd cart_app && npm run build",
-        "build:products": "cd products_app && npm run build"
+        "build:products": "cd products_app && npm run build",
+        "lint": "eslint ."
     },
     "keywords": [
         "ecommerce",
@@ -23,6 +24,11 @@
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
-        "concurrently": "^8.2.0"
+        "@eslint/js": "^9.39.5",
+        "concurrently": "^8.2.0",
+        "eslint": "^9.39.5",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^7.1.1",
+        "globals": "^17.14.0"
     }
 }

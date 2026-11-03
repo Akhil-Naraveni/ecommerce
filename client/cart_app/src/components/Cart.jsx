@@ -52,14 +52,13 @@ const Cart = () =>{
     const [selectedPayementMethod, setSelectedPaymentMethod] = useState(null);
     const [paymentConfirmed, setPaymentConfirmed] = useState(false);
     const cartItemsRef = useRef(cartItems);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(() => Boolean(localStorage.getItem('authToken')));
 
-    const fetchCartItems = async () => {
+    const fetchCartItems = useCallback(async () => {
         try {
             const token = localStorage.getItem('authToken');
             if (!token) {
                 console.warn('No auth token found');
-                setLoading(false);
                 return;
             }
             
@@ -88,31 +87,29 @@ const Cart = () =>{
             setCartItems([]);
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        // Fetch cart items on component mount
+        // The helper only updates state after its cart request completes.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchCartItems();
 
-        // Define event handler
         const handleProductAdded = () => {
             fetchCartItems();
         };
 
-        // Add event listener
         window.addEventListener("productAddedToCart", handleProductAdded);
 
-        // Cleanup function
         return () => {
             window.removeEventListener("productAddedToCart", handleProductAdded);
         };
-    }, []);
+    }, [fetchCartItems]);
 
     // Keep ref in sync with cartItems
     useEffect(() => {
         cartItemsRef.current = cartItems;
     }, [cartItems]);
-    const handleUpdateQuantity = useCallback(async(itemId, delta) => {
+    async function handleUpdateQuantity(itemId, delta) {
         const item = cartItemsRef.current.find((item) => item._id === itemId);
         if (!item) return;
         const newQuantity = item.quantity + delta;
@@ -140,8 +137,8 @@ const Cart = () =>{
         } catch (error) {
             console.error("Error updating item quantity:", error);
         }
-    }, []);
-    const handleRemove = useCallback((itemId) => {
+    }
+    async function handleRemove(itemId) {
         try {
             const token = localStorage.getItem('authToken');
             fetch(`${API_BASE_URL}/cart/cartitems/${itemId}`, {
@@ -163,7 +160,7 @@ const Cart = () =>{
         } catch (error) {
             console.error("Error in handleRemove:", error);
         }
-    }, []);
+    }
 
     const handleCheckout = useCallback(() => {
         setShowPaymentModal(true);
@@ -180,8 +177,6 @@ const Cart = () =>{
     }, [selectedPayementMethod]);
 
     // Memoize summaryDetails to prevent PaymentConfirmModal re-renders
-    const memoizedSummaryDetails = useMemo(() => summaryDetails, [summaryDetails.totalItems, summaryDetails.totalPrice]);
-
     const handlePaymentDone = useCallback(() => {
         setPaymentConfirmed(false);
         try {
@@ -205,7 +200,7 @@ const Cart = () =>{
         } catch (error) {
             console.error("Error in handlePaymentDone:", error);
         }
-    }, []);
+    }, [fetchCartItems]);
     const paymentoptions = useMemo(() => [
         {id : "credit-card", name: "Credit Card", icon : creditCardIcon, description: "Visa, MasterCard, American Express"},
         {id : "paypal", name: "PayPal", icon : paypalIcon, description: "Pay easily using your PayPal account"},
@@ -252,7 +247,7 @@ const Cart = () =>{
             <PaymentModal
                 showPaymentModal={showPaymentModal}
                 setShowPaymentModal={setShowPaymentModal}
-                summaryDetails={memoizedSummaryDetails}
+                summaryDetails={summaryDetails}
                 selectedPayementMethod={selectedPayementMethod}
                 setSelectedPaymentMethod={setSelectedPaymentMethod}
                 handlePayment={handlePayment}
@@ -260,9 +255,8 @@ const Cart = () =>{
             />
             <PaymentConfirmModal
                 showPaymentConfirmModal={paymentConfirmed}
-                setShowPaymentConfirmModal={setPaymentConfirmed}
                 handlePaymentConfirmation={handlePaymentDone}
-                summaryDetails={memoizedSummaryDetails}
+                summaryDetails={summaryDetails}
                 paymentMethod={selectedPayementMethod}
             />
 

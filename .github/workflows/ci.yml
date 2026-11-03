@@ -30,37 +30,42 @@ jobs:
         working-directory: client
         run: npm ci
 
-      # 4. Install Host dependencies
+      # 4. Run ESLint to check for code quality issues
+      - name: Run ESLint
+        working-directory: client
+        run: npm run lint
+
+      # 5. Install Host dependencies
       - name: Install Host dependencies
         working-directory: client/host
         run: npm ci
 
-      # 5. Install Cart MFE dependencies
+      # 6. Install Cart MFE dependencies
       - name: Install Cart dependencies
         working-directory: client/cart_app
         run: npm ci
 
-      # 6. Install Products MFE dependencies
+      # 7. Install Products MFE dependencies
       - name: Install Products dependencies
         working-directory: client/products_app
         run: npm ci
 
-      # 7. Build all three micro-frontends
+      # 8. Build all three micro-frontends
       - name: Build all micro-frontends
         working-directory: client
         run: npm run build
 
-      # 8. Run Host React component tests
+      # 9. Run Host React component tests
       - name: Run Host tests
         working-directory: client/host
         run: npm test -- --runInBand
 
-      # 9. Install backend dependencies
+      # 10. Install backend dependencies
       - name: Install backend dependencies
         working-directory: backend
         run: npm ci
 
-      # 10. Check backend JavaScript syntax
+      # 11. Check backend JavaScript syntax
       - name: Check backend syntax
         working-directory: backend
         run: node --check index.js

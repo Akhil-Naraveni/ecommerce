@@ -1,4 +1,4 @@
-import React,{ useEffect, useMemo, useState, useTransition} from "react";
+import React,{ useCallback, useEffect, useMemo, useState, useTransition} from "react";
 import "./Products.css";
 import productIcon from "../../icons/product.svg"
 import wishlistSelectedIcon from "../../icons/wishlist_selected.svg"
@@ -16,10 +16,6 @@ const Products = () =>{
     const [searchQuery, setSearchQuery] = useState("");
     const [searchCategory, setSearchCategory] = useState("all");
     const [isPending, startTransition] = useTransition();
-
-    useEffect(() => {
-        fetchProducts();
-    }, []);
 
     useEffect(() => {
         const handleWishlistSync = (event) => {
@@ -47,7 +43,7 @@ const Products = () =>{
         return () => window.removeEventListener("productsSearchChanged", handleSearchChanged);
     }, []);
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/products`);
             if (!response.ok) {
@@ -62,7 +58,13 @@ const Products = () =>{
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        // The helper only updates state after the products request completes.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchProducts();
+    }, [fetchProducts]);
 
     const handleAddToCart = async (product) => {
         try {

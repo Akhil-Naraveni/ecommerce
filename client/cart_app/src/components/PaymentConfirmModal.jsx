@@ -7,7 +7,6 @@ import trackIcon from "../../icons/track.svg";
 
 const PaymentConfirmModal = ({
     showPaymentConfirmModal,
-    setShowPaymentConfirmModal,
     handlePaymentConfirmation,
     summaryDetails,
     paymentMethod,
